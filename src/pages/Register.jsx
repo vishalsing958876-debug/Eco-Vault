@@ -2,12 +2,13 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-function Login() {
+function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loadingForm, setLoadingForm] = useState(false);
-  const { login } = useContext(AuthContext);
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,10 +16,10 @@ function Login() {
     setError('');
     setLoadingForm(true);
     try {
-      await login(email, password);
-      navigate('/commerce');
+      await register(name, email, password);
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Failed to sign in. Please check your credentials.');
+      setError(err.message || 'Failed to create account. Please try again.');
     } finally {
       setLoadingForm(false);
     }
@@ -64,8 +65,8 @@ function Login() {
       }}>
         <div style={{ maxWidth: '450px', width: '100%', margin: '0 auto' }}>
           <div style={{ marginBottom: '2.5rem' }}>
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>Welcome Back</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Enter your details to access your account.</p>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>Create Account</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Enter your details to set up your profile.</p>
             {error && (
               <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#b91c1c', borderRadius: '8px', fontSize: '0.95rem', fontWeight: '500' }}>
                 <i className="ri-error-warning-line" style={{ marginRight: '0.5rem' }}></i>
@@ -75,6 +76,23 @@ function Login() {
           </div>
 
           <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-main)', fontSize: '0.95rem' }}>Full Name</label>
+              <div style={{ position: 'relative' }}>
+                <i className="ri-user-line" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}></i>
+                <input 
+                  type="text" 
+                  placeholder="John Doe" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  style={{ width: '100%', padding: '0.9rem 1rem 0.9rem 2.8rem', borderRadius: '12px', border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-main)', fontSize: '1rem', outline: 'none', transition: 'all 0.3s', fontFamily: 'inherit' }} 
+                  onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                  required 
+                />
+              </div>
+            </div>
+
             <div style={{ marginBottom: '1.5rem' }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-main)', fontSize: '0.95rem' }}>Email</label>
               <div style={{ position: 'relative' }}>
@@ -93,10 +111,7 @@ function Login() {
             </div>
             
             <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <label style={{ fontWeight: '600', color: 'var(--text-main)', fontSize: '0.95rem' }}>Password</label>
-                <a href="#" style={{ color: 'var(--primary)', fontSize: '0.9rem', fontWeight: '600', textDecoration: 'none' }}>Forgot password?</a>
-              </div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-main)', fontSize: '0.95rem' }}>Password</label>
               <div style={{ position: 'relative' }}>
                 <i className="ri-lock-line" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}></i>
                 <input 
@@ -113,12 +128,12 @@ function Login() {
             </div>
 
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', cursor: 'pointer', fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-              <input type="checkbox" style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }} />
-              Remember me for 30 days
+              <input type="checkbox" style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }} required />
+              I agree to the Terms of Service & Privacy Policy
             </label>
 
             <button type="submit" className="btn-primary" style={{ width: '100%', padding: '1rem', fontSize: '1.05rem', borderRadius: '12px' }} disabled={loadingForm}>
-              {loadingForm ? 'Signing In...' : 'Sign In'}
+              {loadingForm ? 'Signing Up...' : 'Sign Up'}
             </button>
           </form>
 
@@ -140,7 +155,7 @@ function Login() {
           </div>
 
           <p style={{ textAlign: 'center', marginTop: '2.5rem', color: 'var(--text-muted)', fontSize: '1rem' }}>
-            Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Sign up</Link>
+            Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Sign in</Link>
           </p>
         </div>
       </div>
@@ -159,4 +174,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
